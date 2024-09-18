@@ -7,3 +7,5 @@ Adjustable TicTacToo
 - Play with 2 to 6 players.
 
 Note: The game will reset when sliders are adjusted.
+
+![screenshot](screenshot.png)
