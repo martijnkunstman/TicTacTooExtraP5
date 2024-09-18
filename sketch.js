@@ -7,6 +7,7 @@ let boardDimmensionSlider;
 let winDimmensionSlider;
 let playersSlider;
 let gravitySlider;
+let resetButton;
 
 //-------------
 
@@ -39,6 +40,10 @@ function setup() {
   gravitySlider.position(canvasSize + 20, 110);
   gravitySlider.size(100);
   gravitySlider.input(init);
+
+  resetButton = createButton("Restart");
+  resetButton.position(canvasSize + 20, 300);
+  resetButton.mousePressed(init);
 
   background(50);
   init();
@@ -186,7 +191,7 @@ function mousePressed() {
       const x = Math.floor(mouseX / squareDimmension);
       for (let i = boardDimmension - 1; i >= 0; i--) {
         const index = i * boardDimmension + x;
-        if (index >= 0 && index < boardSquares) {
+        if (index >= 0 && index < boardSquares && x >= 0 && x < boardDimmension) {
           if (data[index].color === 0) {
             data[index].color = turn + 1;
             turn = (turn + 1) % players;
