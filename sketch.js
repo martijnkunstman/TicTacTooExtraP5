@@ -1,12 +1,13 @@
 let boardDimmension = 7;
 let winDimmension = 4;
 let players = 2;
+let gravity = 0;
 
 let boardDimmensionSlider;
 let winDimmensionSlider;
 let playersSlider;
+let gravitySlider;
 
-//const gravity = 1; //todo to make connect four
 //-------------
 
 let canvasSize = 500;
@@ -22,19 +23,24 @@ function setup() {
   boardDimmensionSlider = createSlider(5, 11, 7, 1);
   boardDimmensionSlider.position(canvasSize + 20, 20);
   boardDimmensionSlider.size(100);
-  boardDimmensionSlider.input(updateBoardDimmensions);
+  boardDimmensionSlider.input(init);
 
   winDimmensionSlider = createSlider(3, 5, 4, 1);
   winDimmensionSlider.position(canvasSize + 20, 50);
   winDimmensionSlider.size(100);
-  winDimmensionSlider.input(updateWinDimmension);
+  winDimmensionSlider.input(init);
 
   playersSlider = createSlider(2, 6, 2, 1);
   playersSlider.position(canvasSize + 20, 80);
   playersSlider.size(100);
-  playersSlider.input(updatePlayers);
+  playersSlider.input(init);
 
-  background(0);
+  gravitySlider = createSlider(0, 1, 0, 1);
+  gravitySlider.position(canvasSize + 20, 110);
+  gravitySlider.size(100);
+  gravitySlider.input(init);
+
+  background(50);
   init();
 }
 
@@ -48,22 +54,14 @@ function drawTextBySlider() {
   );
   text("Win Dimmension= " + winDimmensionSlider.value(), canvasSize + 140, 60);
   text("Players = " + playersSlider.value(), canvasSize + 140, 90);
-}
-
-function updateBoardDimmensions() {
-  init();
-}
-function updateWinDimmension() {
-  init();
-}
-function updatePlayers() {
-  init();
+  text("Gravity = " + gravitySlider.value(), canvasSize + 140, 120);
 }
 
 function init() {
   boardDimmension = boardDimmensionSlider.value();
   winDimmension = winDimmensionSlider.value();
   players = playersSlider.value();
+  gravity = gravitySlider.value();
   turn = 0;
   won = 0;
   squareDimmension = canvasSize / boardDimmension;
@@ -80,13 +78,21 @@ function init() {
 
 function drawBoard() {
   data.forEach((square, index) => {
-    fill(colors[square.color]);
+    fill("white");
     rect(
       square.x * squareDimmension,
       square.y * squareDimmension,
       squareDimmension,
       squareDimmension
     );
+    if (square.color !== 0) {
+      fill(colors[square.color]);
+      circle(
+        square.x * squareDimmension + squareDimmension / 2,
+        square.y * squareDimmension + squareDimmension / 2,
+        squareDimmension
+      );
+    }
   });
 }
 
@@ -165,7 +171,8 @@ function checkWin() {
           );
         }
         strokeWeight(1);
-        text("Player " + won + " won", canvasSize + 20, 120);
+        fill("white");
+        text("Player " + won + " won", canvasSize + 20, 170);
         console.log("Player " + won + " won");
         return;
       }
@@ -175,13 +182,27 @@ function checkWin() {
 
 function mousePressed() {
   if (!won) {
-    const x = Math.floor(mouseX / squareDimmension);
-    const y = Math.floor(mouseY / squareDimmension);
-    const index = y * boardDimmension + x;
-    if (index >= 0 && index < boardSquares && x >= 0 && x < boardDimmension) {
-      if (data[index].color === 0) {
-        data[index].color = turn + 1;
-        turn = (turn + 1) % players;
+    if (gravity === 1) {
+      const x = Math.floor(mouseX / squareDimmension);
+      for (let i = boardDimmension - 1; i >= 0; i--) {
+        const index = i * boardDimmension + x;
+        if (index >= 0 && index < boardSquares) {
+          if (data[index].color === 0) {
+            data[index].color = turn + 1;
+            turn = (turn + 1) % players;
+            break;
+          }
+        }
+      }
+    } else {
+      const x = Math.floor(mouseX / squareDimmension);
+      const y = Math.floor(mouseY / squareDimmension);
+      const index = y * boardDimmension + x;
+      if (index >= 0 && index < boardSquares && x >= 0 && x < boardDimmension) {
+        if (data[index].color === 0) {
+          data[index].color = turn + 1;
+          turn = (turn + 1) % players;
+        }
       }
     }
     checkWin();
@@ -189,28 +210,51 @@ function mousePressed() {
 }
 
 function checkMouseOver() {
-  const x = Math.floor(mouseX / squareDimmension);
-  const y = Math.floor(mouseY / squareDimmension);
-  const index = y * boardDimmension + x;
-  if (index >= 0 && index < boardSquares && x >= 0 && x < boardDimmension) {
-    if (data[index].color === 0) {
-      fill(color("rgba(0, 0, 0, 0.2)"));
-      stroke("black");
-      strokeWeight(3);
-      rect(
-        x * squareDimmension,
-        y * squareDimmension,
-        squareDimmension,
-        squareDimmension
-      );
-      strokeWeight(1);
+  if (gravity === 1) {
+    const x = Math.floor(mouseX / squareDimmension);
+    if (x >= 0 && x < boardDimmension) {
+      for (let i = 0; i < boardDimmension; i++) {
+        const index = i * boardDimmension + x;
+        if (index >= 0 && index < boardSquares) {
+          if (data[index].color === 0) {
+            fill(color("rgba(0, 0, 0, 0.2)"));
+            stroke("black");
+            strokeWeight(3);
+            rect(
+              x * squareDimmension,
+              i * squareDimmension,
+              squareDimmension,
+              squareDimmension
+            );
+            strokeWeight(1);
+          }
+        }
+      }
+    }
+  } else {
+    const x = Math.floor(mouseX / squareDimmension);
+    const y = Math.floor(mouseY / squareDimmension);
+    const index = y * boardDimmension + x;
+    if (index >= 0 && index < boardSquares && x >= 0 && x < boardDimmension) {
+      if (data[index].color === 0) {
+        fill(color("rgba(0, 0, 0, 0.2)"));
+        stroke("black");
+        strokeWeight(3);
+        rect(
+          x * squareDimmension,
+          y * squareDimmension,
+          squareDimmension,
+          squareDimmension
+        );
+        strokeWeight(1);
+      }
     }
   }
 }
 
 function draw() {
   if (!won) {
-    background(0);
+    background(50);
     drawTextBySlider();
     drawBoard();
     checkMouseOver();
