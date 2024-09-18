@@ -1,26 +1,82 @@
-const boardDimmension = 8;
-const canvasSize = 500;
-const winDimmension = 4;
-const players = 3;
+let boardDimmension = 7;
+let winDimmension = 4;
+let players = 2;
+
+let boardDimmensionSlider;
+let winDimmensionSlider;
+let playersSlider;
 
 //const gravity = 1; //todo to make connect four
 //-------------
 
+let canvasSize = 500;
 let turn = 0;
 let won = 0;
-const squareDimmension = canvasSize / boardDimmension;
-const boardSquares = boardDimmension * boardDimmension;
-const colors = ["white", "blue", "green", "yellow", "purple", "orange"]; //max 5 players
+let squareDimmension = canvasSize / boardDimmension;
+let boardSquares = boardDimmension * boardDimmension;
+let colors = ["white", "blue", "red", "yellow", "purple", "orange", "green"];
 let data = [];
-for (let i = 0; i < boardSquares; i++) {
-  data.push({
-    x: i % boardDimmension,
-    y: Math.floor(i / boardDimmension),
-    color: 0,
-  });
+
+function setup() {
+  createCanvas(canvasSize * 2, canvasSize);
+  boardDimmensionSlider = createSlider(5, 11, 7, 1);
+  boardDimmensionSlider.position(canvasSize + 20, 20);
+  boardDimmensionSlider.size(100);
+  boardDimmensionSlider.input(updateBoardDimmensions);
+
+  winDimmensionSlider = createSlider(3, 5, 4, 1);
+  winDimmensionSlider.position(canvasSize + 20, 50);
+  winDimmensionSlider.size(100);
+  winDimmensionSlider.input(updateWinDimmension);
+
+  playersSlider = createSlider(2, 6, 2, 1);
+  playersSlider.position(canvasSize + 20, 80);
+  playersSlider.size(100);
+  playersSlider.input(updatePlayers);
+
+  background(0);
+  init();
 }
 
-console.log(data);
+function drawTextBySlider() {
+  fill("white");
+  textSize(20);
+  text(
+    "Board Dimmension = " + boardDimmensionSlider.value(),
+    canvasSize + 140,
+    30
+  );
+  text("Win Dimmension= " + winDimmensionSlider.value(), canvasSize + 140, 60);
+  text("Players = " + playersSlider.value(), canvasSize + 140, 90);
+}
+
+function updateBoardDimmensions() {
+  init();
+}
+function updateWinDimmension() {
+  init();
+}
+function updatePlayers() {
+  init();
+}
+
+function init() {
+  boardDimmension = boardDimmensionSlider.value();
+  winDimmension = winDimmensionSlider.value();
+  players = playersSlider.value();
+  turn = 0;
+  won = 0;
+  squareDimmension = canvasSize / boardDimmension;
+  boardSquares = boardDimmension * boardDimmension;
+  data = [];
+  for (let i = 0; i < boardSquares; i++) {
+    data.push({
+      x: i % boardDimmension,
+      y: Math.floor(i / boardDimmension),
+      color: 0,
+    });
+  }
+}
 
 function drawBoard() {
   data.forEach((square, index) => {
@@ -109,16 +165,12 @@ function checkWin() {
           );
         }
         strokeWeight(1);
+        text("Player " + won + " won", canvasSize + 20, 120);
         console.log("Player " + won + " won");
         return;
       }
     }
   }
-}
-
-function setup() {
-  createCanvas(500, 500);
-  background(0);
 }
 
 function mousePressed() {
@@ -158,6 +210,8 @@ function checkMouseOver() {
 
 function draw() {
   if (!won) {
+    background(0);
+    drawTextBySlider();
     drawBoard();
     checkMouseOver();
   }
