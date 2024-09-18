@@ -57,7 +57,7 @@ function drawTextBySlider() {
     canvasSize + 140,
     30
   );
-  text("Win Dimmension= " + winDimmensionSlider.value(), canvasSize + 140, 60);
+  text("Win Dimmension = " + winDimmensionSlider.value(), canvasSize + 140, 60);
   text("Players = " + playersSlider.value(), canvasSize + 140, 90);
   text("Gravity = " + gravitySlider.value(), canvasSize + 140, 120);
 }
