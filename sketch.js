@@ -10,7 +10,7 @@ let turn = 0;
 let won = 0;
 const squareDimmension = canvasSize / boardDimmension;
 const boardSquares = boardDimmension * boardDimmension;
-const colors = ["white", "blue", "green", "yellow", "purple", "orange"];//max 5 players
+const colors = ["white", "blue", "green", "yellow", "purple", "orange"]; //max 5 players
 let data = [];
 for (let i = 0; i < boardSquares; i++) {
   data.push({
@@ -53,6 +53,8 @@ function checkWin() {
     for (let j = 0; j < directions.length; j++) {
       const direction = directions[j];
       let count = 1;
+      let wonSquares = [];
+      wonSquares.push(i);
       for (let k = 1; k < winDimmension; k++) {
         const newX = x + k * direction.x;
         const newY = y + k * direction.y;
@@ -64,6 +66,7 @@ function checkWin() {
         ) {
           const index = newY * boardDimmension + newX;
           if (data[index].color === color) {
+            wonSquares.push(index);
             count++;
           } else {
             break;
@@ -83,6 +86,7 @@ function checkWin() {
         ) {
           const index = newY * boardDimmension + newX;
           if (data[index].color === color) {
+            wonSquares.push(index);
             count++;
           } else {
             break;
@@ -93,6 +97,18 @@ function checkWin() {
       }
       if (count >= winDimmension) {
         won = color;
+        fill(colors[won]);
+        stroke("black");
+        strokeWeight(6);
+        for (let k = 0; k < wonSquares.length; k++) {
+          rect(
+            (wonSquares[k] % boardDimmension) * squareDimmension,
+            Math.floor(wonSquares[k] / boardDimmension) * squareDimmension,
+            squareDimmension,
+            squareDimmension
+          );
+        }
+        strokeWeight(1);
         console.log("Player " + won + " won");
         return;
       }
@@ -141,6 +157,8 @@ function checkMouseOver() {
 }
 
 function draw() {
-  drawBoard();
-  checkMouseOver();
+  if (!won) {
+    drawBoard();
+    checkMouseOver();
+  }
 }
