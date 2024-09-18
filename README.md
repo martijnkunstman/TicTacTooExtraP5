@@ -1,6 +1,6 @@
-# TicTacTooExtraP5
+# TicTac~~Too~~ToeExtraP5
 
-Adjustable TicTacToo
+Adjustable TicTac~~Too~~Toe
 
 - Customize your board with 5 to 11 squares in both horizontal and vertical directions.
 - Set your win condition by selecting 3 to 5 squares in a row.
