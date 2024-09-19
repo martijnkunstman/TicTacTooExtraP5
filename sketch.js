@@ -21,7 +21,7 @@ let data = [];
 
 function setup() {
   createCanvas(canvasSize * 2, canvasSize);
-  boardDimmensionSlider = createSlider(5, 11, 7, 1);
+  boardDimmensionSlider = createSlider(3, 11, 7, 1);
   boardDimmensionSlider.position(canvasSize + 20, 20);
   boardDimmensionSlider.size(100);
   boardDimmensionSlider.input(init);
