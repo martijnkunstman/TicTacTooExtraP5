@@ -102,7 +102,6 @@ function drawBoard() {
 }
 
 function checkWin() {
-  //check all squares and their winDimmension neighbors
   for (let i = 0; i < boardSquares; i++) {
     const square = data[i];
     if (square.color === 0) {
@@ -166,15 +165,13 @@ function checkWin() {
         won = color;
         fill(colors[won]);
         stroke("black");
-        strokeWeight(6);
-        for (let k = 0; k < wonSquares.length; k++) {
-          rect(
-            (wonSquares[k] % boardDimmension) * squareDimmension,
-            Math.floor(wonSquares[k] / boardDimmension) * squareDimmension,
-            squareDimmension,
-            squareDimmension
-          );
-        }
+        strokeWeight(squareDimmension/4);
+        line(
+          (wonSquares[0] % boardDimmension) * squareDimmension+squareDimmension/2,
+          Math.floor(wonSquares[0] / boardDimmension) * squareDimmension+squareDimmension/2,
+          (wonSquares[wonSquares.length-1] % boardDimmension) * squareDimmension+squareDimmension/2,
+          Math.floor(wonSquares[wonSquares.length-1] / boardDimmension) * squareDimmension+squareDimmension/2
+        );
         strokeWeight(1);
         fill("white");
         text("Player " + won + " won", canvasSize + 20, 170);
@@ -191,7 +188,12 @@ function mousePressed() {
       const x = Math.floor(mouseX / squareDimmension);
       for (let i = boardDimmension - 1; i >= 0; i--) {
         const index = i * boardDimmension + x;
-        if (index >= 0 && index < boardSquares && x >= 0 && x < boardDimmension) {
+        if (
+          index >= 0 &&
+          index < boardSquares &&
+          x >= 0 &&
+          x < boardDimmension
+        ) {
           if (data[index].color === 0) {
             data[index].color = turn + 1;
             turn = (turn + 1) % players;
@@ -209,8 +211,7 @@ function mousePressed() {
           turn = (turn + 1) % players;
         }
       }
-    }
-    checkWin();
+    }    
   }
 }
 
@@ -263,5 +264,6 @@ function draw() {
     drawTextBySlider();
     drawBoard();
     checkMouseOver();
+    checkWin();
   }
 }
